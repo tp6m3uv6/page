@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>情緒小勇士SEL測驗</title>
+  <style>
+    body {
+      background: #f8f6e9;
+      font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    /* 利樂包包裝風格 */
+    .milk-carton {
+      background: #fff;
+      width: 320px;
+      max-width: 90%;
+      border-radius: 16px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .carton-top {
+      background: #5bb393;
+      height: 60px;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.8em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    
+    .carton-top::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 15px;
+      background: #4a9a79;
+    }
+    
+    .carton-content {
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .carton-window {
+      background: #f7f7f2;
+      border: 6px solid #5bb393;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 15px auto;
+      position: relative;
+      text-align: center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+    
+    .carton-label {
+      background: #5bb393;
+      color: white;
+      border-radius: 18px;
+      padding: 8px 16px;
+      margin: 10px auto;
+      display: inline-block;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    
+    .carton-footer {
+      background: #5bb393;
+      padding: 15px;
+      border-radius: 0 0 16px 16px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .emoji-character {
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 65px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .center { text-align: center; }
+    
+    .tag-row { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px; 
+      justify-content: center; 
+      margin-bottom: 20px; 
+    }
+    
+    .tag { 
+      border-radius: 20px; 
+      padding: 6px 16px; 
+      font-size: 0.95em; 
+      font-weight: 500; 
+      color: #333; 
+      display: inline-block;
+    }
+    
+    .tag-yellow { background: #fff9c4; }
+    .tag-green { background: #d0f9e1; }
+    .tag-blue { background: #dbeafe; }
+    .tag-orange { background: #ffe0b2; }
+    .tag-pink { background: #ffe0f0; }
+    
+    .btn-main {
+      background: #5bb393;
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      font-size: 1.1em;
+      padding: 12px 38px;
+      cursor: pointer;
+      margin-top: 15px;
+      margin-bottom: 0;
+      transition: background 0.2s;
+      box-shadow: 0 3px 8px rgba(91,179,147,0.3);
+    }
+    
+    .btn-main:hover { 
+      background: #4a9a79; 
+      transform: translateY(-2px);
+    }
+    
+    /* 測驗頁 */
+    .quiz-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 15px; 
+    }
+    
+    .quiz-label {
+      background: #fff9c4;
+      color: #444;
+      font-size: 1em;
+      border-radius: 14px;
+      padding: 4px 16px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+    
+    .progress-bar-bg {
+      width: 100%;
+      height: 16px;
+      background: #ececec;
+      border-radius: 8px;
+      margin: 18px 0 22px 0;
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      background: #7fd6c7;
+      border-radius: 8px;
+      transition: width 0.3s;
+    }
+    
+    .quiz-q {
+      font-size: 1.25em;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    .opt-list { 
+      list-style: none; 
+      padding: 0; 
+      margin: 0 0 22px 0; 
+    }
+    
+    .opt-item {
+      border: 2px solid #d3e2db;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      padding: 16px 20px;
+      font-size: 1.05em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s;
+      background: #fff;
+    }
+    
+    .opt-item.selected, .opt-item:hover { 
+      border: 2px solid #5bb393; 
+      background: #f0faf8; 
+    }
+    
+    .opt-radio {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #5bb393;
+      margin-right: 16px;
+      display: inline-block;
+      position: relative;
+    }
+    
+    .opt-item.selected .opt-radio:after {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #5bb393;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+    
+    .quiz-btn-row { 
+      display: flex; 
+      justify-content: space-between; 
+    }
+    
+    .btn-quiz {
+      border: none;
+      border-radius: 22px;
+      font-size: 1.05em;
+      padding: 10px 32px;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 0;
+      transition: all 0.2s;
+    }
+    
+    .btn-prev { 
+      background: #ffbdbd; 
+      color: #fff; 
+    }
+    
+    .btn-prev:hover { 
+      background: #ff8a8a; 
+      transform: translateY(-2px);
+    }
+    
+    .btn-next { 
+      background: #7fd6c7; 
+      color: #fff; 
+    }
+    
+    .btn-next:hover { 
+      background: #5bb393; 
+      transform: translateY(-2px);
+    }
+    
+    /* 結果頁 */
+    .result-title { 
+      color: #5bb393; 
+      font-size: 1.35em; 
+      font-weight: bold; 
+      margin-bottom: 15px; 
+    }
+    
+    .result-character {
+      width: 100px;
+      height: 100px;
+      background: #5bb393;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 50px;
+      color: white;
+      box-shadow: 0 3px 12px rgba(91,179,147,0.3);
+    }
+    
+    .result-role { 
+      font-size: 1.2em; 
+      font-weight: bold; 
+      margin: 12px 0 8px 0; 
+      color: #333; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px;
+    }
+    
+    .result-desc { 
+      color: #444; 
+      font-size: 1em; 
+      margin-bottom: 22px; 
+    }
+    
+    .score-block {
+      border-radius: 14px;
+      margin-bottom: 14px;
+      padding: 12px 15px 10px 15px;
+      text-align: left;
+      font-size: 1em;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .score-block::after {
+      content: "🥛";
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      font-size: 1.2em;
+      opacity: 0.2;
+    }
+    
+    .score-bar-bg { 
+      width: 100%; 
+      height: 16px; 
+      background: rgba(255,255,255,0.5); 
+      border-radius: 8px; 
+      margin-top: 8px; 
+    }
+    
+    .score-bar-fill { 
+      height: 100%; 
+      border-radius: 8px; 
+    }
+    
+    .score-yellow { background: #ffe082; }
+    .score-green { background: #b2f2c8; }
+    .score-blue { background: #b3d4fc; }
+    .score-orange { background: #ffd59e; }
+    .score-pink { background: #ffd1e3; }
+    
+    .btn-retry {
+      background: #5bb393;
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      font-size: 1.08em;
+      padding: 12px 36px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 3px 8px rgba(91,179,147,0.3);
+    }
+    
+    .btn-retry:hover { 
+      background: #4a9a79; 
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <!-- 首頁 - 利樂包造型 -->
+  <div class="milk-carton" id="home">
+    <div class="carton-top">情緒小勇士</div>
+    <div class="carton-content">
+      <div class="carton-window">
+        <div class="emoji-character">🧠</div>
+        <div class="carton-label">EQ測驗</div>
+        <div style="margin:15px 0;color:#444;">
+          哈囉！想知道你和情緒相處的能力有多強嗎？<br>
+          讓我們一起來探索你的情緒世界吧！
+        </div>
+        <div class="tag-row">
+          <span class="tag tag-yellow">自我覺察</span>
+          <span class="tag tag-green">情緒管理</span>
+          <span class="tag tag-blue">社會覺察</span>
+          <span class="tag tag-orange">人際技巧</span>
+          <span class="tag tag-pink">負責任的決策</span>
+        </div>
+      </div>
+      <div class="center">
+        <button class="btn-main" onclick="startQuiz()">開始測驗</button>
+      </div>
+    </div>
+    <div class="carton-footer">VITAMIN EQ+</div>
+  </div>
+
+  <!-- 測驗頁 -->
+  <div class="milk-carton" id="quiz" style="display:none;">
+    <div class="carton-top">情緒小勇士</div>
+    <div class="carton-content">
+      <div class="quiz-header">
+        <span id="quiz-progress">問題 1/10</span>
+        <span class="quiz-label" id="quiz-dimension">自我覺察</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="quiz-bar" style="width:0%"></div>
+      </div>
+      <div class="quiz-q" id="quiz-question"></div>
+      <ul class="opt-list" id="quiz-options"></ul>
+      <div class="quiz-btn-row">
+        <button class="btn-quiz btn-prev" onclick="prevQuiz()" id="btn-prev" style="visibility:hidden;">上一題</button>
+        <button class="btn-quiz btn-next" onclick="nextQuiz()" id="btn-next">下一題</button>
+      </div>
+    </div>
+    <div class="carton-footer">VITAMIN EQ+</div>
+  </div>
+
+  <!-- 結果頁 - 利樂包造型 -->
+  <div class="milk-carton" id="result" style="display:none;">
+    <div class="carton-top">情緒小勇士</div>
+    <div class="carton-content">
+      <div class="carton-window">
+        <div class="result-character" id="result-emoji">🏆</div>
+        <div class="result-title">測驗結果</div>
+        <div class="result-role" id="result-role"></div>
+        <div class="result-desc" id="result-desc"></div>
+      </div>
+      <div id="result-scores"></div>
+      <div class="center">
+        <button class="btn-retry" onclick="restartQuiz()">再次測驗</button>
+      </div>
+    </div>
+    <div class="carton-footer">VITAMIN EQ+</div>
+  </div>
+
+<script>
+const DIMENSIONS = [
+  { key: 'self', label: '自我覺察', color: '#fff9c4', bar: 'score-yellow', emoji: '🧠' },
+  { key: 'manage', label: '情緒管理', color: '#d0f9e1', bar: 'score-green', emoji: '🌱' },
+  { key: 'social', label: '社會覺察', color: '#dbeafe', bar: 'score-blue', emoji: '🤝' },
+  { key: 'relation', label: '人際技巧', color: '#ffe0b2', bar: 'score-orange', emoji: '👫' },
+  { key: 'decision', label: '負責任的決策', color: '#ffe0f0', bar: 'score-pink', emoji: '🎯' },
+];
+
+// 【更新的題庫】包含50題：原始SEL題庫更新25題 + 職場導向SEL題庫25題
+const QUESTION_BANK = {
+  self: [
+    // 自我覺察面向 - 原有題庫更新版
+    { q: "當你感到難過時，你能分辨原因嗎？", opts: ["無法分辨，覺得就是難過","大致知道，但不太確定","通常能分辨原因","能清楚分辨並說明原因"], score: [0,1,2,3] },
+    { q: "遇到壓力時，你能察覺自己的情緒變化嗎？", opts: ["完全無法察覺","偶爾能察覺","大多能察覺","總是能察覺"], score: [0,1,2,3] },
+    { q: "你能說出自己現在的心情嗎？", opts: ["說不出來","有時可以","大多可以","很清楚"], score: [0,1,2,3] },
+    { q: "面對失敗時，你會怎麼看待自己的感受？", opts: ["忽略感受","覺得自己不好","試著理解感受","正面看待並學習"], score: [0,1,2,3] },
+    { q: "你能分辨不同的情緒（如生氣、難過、害怕）嗎？", opts: ["很難分辨","有時可以","大多可以","很清楚"], score: [0,1,2,3] },
+    // 職場自我覺察 - 新增題庫
+    { q: "當主管給予負面評價時，你能區分對事不對人的批評嗎？", opts: ["完全不能","偶爾可以","大多能","總是能"], score: [0,1,2,3] },
+    { q: "工作壓力大時，你能覺察自己的身體反應（如頭痛、肌肉緊繃）嗎？", opts: ["完全不能","偶爾能察覺","大多能察覺","完全能察覺"], score: [0,1,2,3] },
+    { q: "你能察覺哪些工作場景會觸發你的焦慮或不安？", opts: ["完全不能","有時能察覺","經常能察覺","非常清楚"], score: [0,1,2,3] },
+    { q: "你能辨別自己在職場中的優勢與弱點嗎？", opts: ["很難辨別","大致了解","大多清楚","非常清楚"], score: [0,1,2,3] },
+    { q: "你會反思自己在團隊中扮演什麼角色？", opts: ["從不反思","偶爾反思","經常反思","總是反思"], score: [0,1,2,3] }
+  ],
+  manage: [
+    // 情緒管理面向 - 原有題庫更新版
+    { q: "當你生氣時，你會怎麼做？", opts: ["直接發脾氣","忍住情緒不表達","試著冷靜下來","深呼吸後用和平方式表達"], score: [0,1,2,3] },
+    { q: "遇到壓力時，你會如何調適？", opts: ["不知所措","找人訴苦","運動或做喜歡的事","用正向方式自我激勵"], score: [0,1,2,3] },
+    { q: "你會用什麼方法讓自己冷靜？", opts: ["不會冷靜","轉移注意力","深呼吸","有多種有效方法"], score: [0,1,2,3] },
+    { q: "你會用什麼方式調整負面情緒？", opts: ["壓抑情緒","發洩情緒","轉換心情","正向思考"], score: [0,1,2,3] },
+    { q: "你能控制自己的衝動行為嗎？", opts: ["完全不能","偶爾可以","大多可以","總是可以"], score: [0,1,2,3] },
+    // 職場情緒管理 - 新增題庫
+    { q: "當同事表現比你好且獲得讚賞時，你會如何管理自己的嫉妒情緒？", opts: ["完全無法管理","努力壓抑","大多能接受","能真誠為他人高興"], score: [0,1,2,3] },
+    { q: "面對職場中不可控的變數（如組織重組），你如何調適不安情緒？", opts: ["感到恐慌無助","被動等待結果","尋求資訊理解情況","積極準備適應變化"], score: [0,1,2,3] },
+    { q: "當多個截止日期同時到來時，你會如何管理自己的焦慮？", opts: ["持續處於焦慮中","忍耐焦慮勉強應對","透過計畫減輕焦慮","運用多種方法有效管理壓力"], score: [0,1,2,3] },
+    { q: "遇到客戶/同事無理取鬧時，你如何控制自己的情緒反應？", opts: ["立即反擊","消極忍受","平靜但堅定地回應","理解對方需求並專業處理"], score: [0,1,2,3] },
+    { q: "工作犯錯後，你會如何處理自責和挫折感？", opts: ["長期自責","暫時情緒低落","接受犯錯並尋求改進","視為學習機會並正向調適"], score: [0,1,2,3] }
+  ],
+  social: [
+    // 社會覺察面向 - 原有題庫更新版
+    { q: "看到同學心情不好時，你會？", opts: ["沒注意到","注意到但不知如何反應","主動關心對方","主動關心並給予適當支持"], score: [0,1,2,3] },
+    { q: "你能理解別人的感受嗎？", opts: ["很難理解","有時能感受到","大多能理解","能深刻同理對方"], score: [0,1,2,3] },
+    { q: "你能察覺他人的非語言訊息（如表情）嗎？", opts: ["完全無法","偶爾能","大多能","總是能"], score: [0,1,2,3] },
+    { q: "你會尊重他人的不同意見嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    { q: "你能體諒別人的困難嗎？", opts: ["很難","偶爾","經常","總是"], score: [0,1,2,3] },
+    // 職場社會覺察 - 新增題庫
+    { q: "團隊會議中，你能察覺他人表情變化並調整自己的發言嗎？", opts: ["完全不能","偶爾能","經常能","總是能"], score: [0,1,2,3] },
+    { q: "你能理解不同部門同事的工作壓力和需求嗎？", opts: ["很難理解","部分理解","大多理解","完全理解"], score: [0,1,2,3] },
+    { q: "你能察覺主管的溝通風格並相應調整嗎？", opts: ["完全不能","有時能","經常能","總是能"], score: [0,1,2,3] },
+    { q: "你是否能察覺同事間的潛在衝突並適當介入？", opts: ["完全不能","偶爾能","經常能","總是能"], score: [0,1,2,3] },
+    { q: "你能理解組織文化中的隱含規則嗎？", opts: ["完全不能","大致了解","清楚理解","深入理解"], score: [0,1,2,3] }
+  ],
+  relation: [
+    // 人際技巧面向 - 原有題庫更新版
+    { q: "與朋友意見不合時，你會？", opts: ["堅持己見","避免衝突，選擇沉默","嘗試溝通找共識","主動傾聽並尊重對方"], score: [0,1,2,3] },
+    { q: "你如何表達自己的需求？", opts: ["很少表達","只在必要時表達","能適時表達","清楚且尊重地表達"], score: [0,1,2,3] },
+    { q: "你能協助團隊解決衝突嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    { q: "你會主動道歉嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    { q: "你能接受別人的建議嗎？", opts: ["很難","偶爾","經常","總是"], score: [0,1,2,3] },
+    // 職場人際技巧 - 新增題庫
+    { q: "向主管提出想法時，你會如何表達以增加被接納的可能？", opts: ["直接表達不考慮方式","簡單說明自己想法","清楚表達並提供理由","組織完整論述並考慮各方觀點"], score: [0,1,2,3] },
+    { q: "當需要婉拒同事不合理請求時，你會如何溝通？", opts: ["直接拒絕","找藉口推託","委婉但不明確","堅定又尊重地表達界限"], score: [0,1,2,3] },
+    { q: "如何在團隊合作中表達自己的想法又尊重他人的意見？", opts: ["我的想法為主","多聽少說","提出想法並聆聽反饋","促進開放對話並整合不同觀點"], score: [0,1,2,3] },
+    { q: "與跨部門同事合作時，你如何建立有效溝通？", opts: ["僅關注自身部門任務","基本資訊交流","主動了解對方需求","建立互信並創造共贏"], score: [0,1,2,3] },
+    { q: "收到建設性批評時，你會如何回應以維護良好關係？", opts: ["感到被冒犯","被動接受","感謝並考慮","積極感謝並尋求具體改進建議"], score: [0,1,2,3] }
+  ],
+  decision: [
+    // 負責任的決策面向 - 原有題庫更新版
+    { q: "遇到選擇時，你會？", opts: ["隨便選一個","考慮一下再決定","分析利弊後決定","全面評估並預想後果"], score: [0,1,2,3] },
+    { q: "做決定前，你會考慮他人感受嗎？", opts: ["很少考慮","偶爾會想","大多會考慮","一定會考慮"], score: [0,1,2,3] },
+    { q: "你會為自己的決定負責嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    { q: "你會反思自己的決策嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    { q: "你做決定時會考慮公平嗎？", opts: ["從不","偶爾","經常","總是"], score: [0,1,2,3] },
+    // 職場決策能力 - 新增題庫
+    { q: "工作量超出負荷時，你會如何決定任務優先順序？", opts: ["隨機處理","處理最緊急的","依照重要性和緊急性排序","建立系統性框架評估並安排"], score: [0,1,2,3] },
+    { q: "當你的決策可能影響團隊其他成員時，你會如何考量？", opts: ["主要考慮自己","考慮直接相關者","考慮大多數人影響","全面評估各方利益與長期影響"], score: [0,1,2,3] },
+    { q: "面對道德兩難的工作情境，你會如何做決定？", opts: ["遵從權威指示","遵循多數人做法","依個人價值判斷","基於原則並考慮多方影響"], score: [0,1,2,3] },
+    { q: "發現同事的錯誤時，你會基於什麼考量決定是否指出？", opts: ["直接指出不考慮場合","私下告知","考慮對方感受選擇適當時機","評估嚴重性並以建設性方式溝通"], score: [0,1,2,3] },
+    { q: "當主管的要求與公司政策有衝突時，你會如何做決定？", opts: ["直接拒絕","被動執行","委婉表達疑慮","專業溝通並提出替代方案"], score: [0,1,2,3] }
+  ]
+};
+
+// 總結語題庫（根據總分高低顯示不同結論）
+const SUMMARY_BANK = [
+  { role: "情緒大師 🏆", desc: "你能全面掌握情緒與人際互動，是大家學習的榜樣！你能夠敏銳地覺察自己的情緒，並且善於管理與表達，同時也能同理他人並做出成熟負責的決策。", emoji: "🏆" },
+  { role: "情緒學習者 📚", desc: "你已經能夠認識一些基本情緒，並且開始學習如何處理它們。有時候你能夠控制自己的情緒，但有時候還是會感到困難。持續練習，你會越來越棒！", emoji: "📚" },
+  { role: "情緒新手 🌱", desc: "你正開始探索自己的情緒世界，建議多觀察與練習，會越來越進步！多和身邊的人討論、分享你的感受，會有很大的幫助。", emoji: "🌱" }
+];
+
+let quizSet = []; // 10題，每面向2題
+let answers = [];
+let curIdx = 0;
+
+function startQuiz() {
+  // 1. 隨機抽取每面向2題
+  quizSet = [];
+  DIMENSIONS.forEach(dim => {
+    let arr = QUESTION_BANK[dim.key];
+    let idxs = [];
+    while (idxs.length < 2) {
+      let r = Math.floor(Math.random() * arr.length);
+      if (!idxs.includes(r)) idxs.push(r);
+    }
+    idxs.forEach(i => quizSet.push({ ...arr[i], dim: dim.key }));
+  });
+  // 2. 打亂題目順序
+  quizSet = quizSet.sort(() => Math.random() - 0.5);
+  answers = Array(10).fill(null);
+  curIdx = 0;
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('quiz').style.display = '';
+  showQuiz();
+}
+
+function showQuiz() {
+  let q = quizSet[curIdx];
+  let dimMeta = DIMENSIONS.find(d => d.key === q.dim);
+  document.getElementById('quiz-progress').innerText = `問題 ${curIdx + 1}/10`;
+  document.getElementById('quiz-dimension').innerText = dimMeta.label;
+  document.getElementById('quiz-dimension').style.background = dimMeta.color;
+  document.getElementById('quiz-question').innerText = q.q;
+  // progress bar
+  document.getElementById('quiz-bar').style.width = `${(curIdx)/10*100}%`;
+  // options
+  let ul = document.getElementById('quiz-options');
+  ul.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    let li = document.createElement('li');
+    li.className = 'opt-item' + (answers[curIdx] === i ? ' selected' : '');
+    li.onclick = () => { answers[curIdx] = i; showQuiz(); };
+    li.innerHTML = `<span class="opt-radio"></span>${opt}`;
+    ul.appendChild(li);
+  });
+  // 上一題按鈕
+  document.getElementById('btn-prev').style.visibility = curIdx === 0 ? 'hidden' : 'visible';
+  // 下一題按鈕
+  document.getElementById('btn-next').innerText = curIdx === 9 ? '完成測驗' : '下一題';
+  document.getElementById('btn-next').disabled = (answers[curIdx] === null);
+}
+
+function nextQuiz() {
+  if (answers[curIdx] === null) return;
+  if (curIdx === 9) {
+    showResult();
+  } else {
+    curIdx++;
+    showQuiz();
+  }
+}
+
+function prevQuiz() {
+  if (curIdx > 0) {
+    curIdx--;
+    showQuiz();
+  }
+}
+
+function showResult() {
+  // 統計各面向分數
+  let scoreMap = { self:0, manage:0, social:0, relation:0, decision:0 };
+  let maxMap = { self:0, manage:0, social:0, relation:0, decision:0 };
+  quizSet.forEach((q, i) => {
+    scoreMap[q.dim] += q.score[answers[i]];
+    maxMap[q.dim] += Math.max(...q.score);
+  });
+  // 百分比
+  let percentMap = {};
+  DIMENSIONS.forEach(dim => {
+    percentMap[dim.key] = Math.round(scoreMap[dim.key] / maxMap[dim.key] * 100);
+  });
+  // 總分
+  let total = Object.values(percentMap).reduce((a,b)=>a+b,0)/5;
+  // 結論
+  let summary;
+  if (total >= 85) summary = SUMMARY_BANK[0];
+  else if (total >= 60) summary = SUMMARY_BANK[1];
+  else summary = SUMMARY_BANK[2];
+
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('result').style.display = '';
+  document.getElementById('result-role').innerHTML = summary.role;
+  document.getElementById('result-desc').innerText = summary.desc;
+  document.getElementById('result-emoji').innerHTML = summary.emoji;
+
+  // 各面向分數
+  let html = '';
+  DIMENSIONS.forEach(dim => {
+    html += `<div class="score-block" style="background:${dim.color}">
+      <div style="font-weight:600;font-size:1.08em;margin-bottom:2px;">
+        ${dim.emoji} ${dim.label}
+      </div>
+      <div class="score-bar-bg">
+        <div class="score-bar-fill ${dim.bar}" style="width:${percentMap[dim.key]}%"></div>
+      </div>
+      <div style="font-size:0.95em;color:#666;margin-top:6px;">${percentMap[dim.key]}% 的能力</div>
+    </div>`;
+  });
+  document.getElementById('result-scores').innerHTML = html;
+}
+
+function restartQuiz() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('home').style.display = '';
+}
+</script>
+</body>
+</html>
